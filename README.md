@@ -86,7 +86,7 @@ This maps to:
 ```go
 type Config struct {
     Baz Baz `gcfg:"Baz"`
-	Bar Bar `gcfg:"Bar"`
+    Bar Bar `gcfg:"Bar"`
 }
 
 type Baz struct {
