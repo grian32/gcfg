@@ -43,14 +43,6 @@ func (l *Lexer) advance() {
 	l.readPos += 1
 }
 
-func (l *Lexer) peek() byte {
-	if l.readPos >= len(l.input) {
-		return 0
-	} else {
-		return l.input[l.readPos]
-	}
-}
-
 func (l *Lexer) NextToken() (Token, error) {
 	// TODO: consider not doing this.. maybe just for indentation
 	l.skipWhitespace()
