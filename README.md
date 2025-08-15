@@ -6,7 +6,7 @@ GCFG is designed for configuration, not for general purpose data storage, and as
 
 ## Features
 
-GCFG supports the following value types: integers, floats, strings, booleans, arrays, pairs, and null.
+GCFG supports the following value types: integers, floats, strings, booleans, arrays, pairs, and nil.
 
 ### Pairs
 
