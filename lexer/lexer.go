@@ -62,7 +62,7 @@ func (l *Lexer) NextToken() (Token, error) {
 		tok.Literal = ""
 		tok.Type = EOF
 	} else if l.ch == '"' {
-		// strings
+		return l.readString()
 	} else if IsDigit(l.ch) {
 		return l.readNumber()
 	} else {
@@ -76,6 +76,18 @@ func (l *Lexer) skipWhitespace() {
 	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
 		l.advance()
 	}
+}
+
+func (l *Lexer) readString() (Token, error) {
+	startPos := l.pos + 1
+
+	l.advance() // go past "
+
+	for l.ch != '"' {
+		l.advance()
+	}
+
+	return Token{Type: STRING, Literal: string(l.input[startPos:l.pos])}, nil
 }
 
 func (l *Lexer) readNumber() (Token, error) {

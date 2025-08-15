@@ -12,6 +12,7 @@ func TestNextToken(t *testing.T) {
 =,
 1.23
 123
+"hello"
 	`
 
 	expectedTokenTypes := []Token{
@@ -25,6 +26,7 @@ func TestNextToken(t *testing.T) {
 		newToken(COMMA, ","),
 		newToken(FLOAT, "1.23"),
 		newToken(INT, "123"),
+		newToken(STRING, "hello"),
 	}
 
 	l := New([]byte(input))
