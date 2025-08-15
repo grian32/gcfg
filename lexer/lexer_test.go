@@ -27,10 +27,10 @@ func TestNextToken(t *testing.T) {
 		newToken(FLOAT, "1.23"),
 		newToken(INT, "123"),
 		newToken(STRING, "hello"),
-		//newToken(BOOL, "true"),
-		//newToken(BOOL, "false"),
-		//newToken(IDENT, "foo"),
-		//newToken(NULL, "nil"),
+		newToken(BOOL, "true"),
+		newToken(BOOL, "false"),
+		newToken(IDENT, "foo"),
+		newToken(NULL, "nil"),
 		newToken(EOF, ""),
 	}
 
@@ -62,6 +62,10 @@ func TestBadInput(t *testing.T) {
 			name:  "EndInDot",
 			input: "123.",
 		},
+		{
+			name:  "MalformedString",
+			input: `"hey`,
+		},
 	}
 
 	for _, tt := range tests {
@@ -74,5 +78,4 @@ func TestBadInput(t *testing.T) {
 			}
 		})
 	}
-
 }

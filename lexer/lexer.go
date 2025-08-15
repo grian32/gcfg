@@ -81,6 +81,9 @@ func (l *Lexer) readString() (Token, error) {
 	l.advance() // go past "
 
 	for l.ch != '"' {
+		if l.ch == 0 {
+			return Token{}, errors.New("malformed string")
+		}
 		l.advance()
 	}
 
