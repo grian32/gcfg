@@ -61,28 +61,36 @@ func (p *Parser) ParseFile() (map[string]any, error) {
 }
 
 func (p *Parser) parseAssign() (any, error) {
-	err := p.NextToken()
+	err := p.NextToken() // advance past =
+	if err != nil {
+		return nil, err
+	}
+	err = p.NextToken() // advance to value
 	if err != nil {
 		return nil, err
 	}
 
+	return p.parseValue()
+}
+
+func (p *Parser) parseValue() (any, error) {
 	var val any
 
-	switch p.peekToken.Type {
+	switch p.curToken.Type {
 	case lexer.INT:
-		value, err := strconv.Atoi(p.peekToken.Literal)
+		value, err := strconv.Atoi(p.curToken.Literal)
 		if err != nil {
 			return nil, err
 		}
 		val = value
 	case lexer.FLOAT:
-		value, err := strconv.ParseFloat(p.peekToken.Literal, 64)
+		value, err := strconv.ParseFloat(p.curToken.Literal, 64)
 		if err != nil {
 			return nil, err
 		}
 		val = value
 	case lexer.STRING:
-		val = p.peekToken.Literal
+		val = p.curToken.Literal
 	case lexer.TRUE:
 		val = true
 	case lexer.FALSE:
@@ -91,11 +99,6 @@ func (p *Parser) parseAssign() (any, error) {
 		val = nil
 	default:
 		return nil, errors.New("")
-	}
-
-	err = p.NextToken()
-	if err != nil {
-		return nil, err
 	}
 
 	return val, nil
