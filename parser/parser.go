@@ -35,6 +35,10 @@ func (p *Parser) ParseFile() (map[string]any, error) {
 	if err != nil {
 		return nil, err
 	}
+	err = p.NextToken()
+	if err != nil {
+		return nil, err
+	}
 
 	fileMap := make(map[string]any)
 
@@ -50,12 +54,30 @@ func (p *Parser) ParseFile() (map[string]any, error) {
 				fileMap[name] = value
 			} else if p.peekToken.Type == lexer.LBRACE {
 				name := p.curToken.Literal
-				value, err := p.parseSection()
+				value, err := p.parseSection(false)
 				if err != nil {
 					return nil, err
 				}
 
 				fileMap[name] = value
+			}
+		} else if p.curToken.Type == lexer.LBRACKET && p.peekToken.Type == lexer.IDENT {
+			err = p.NextToken() // advance past lbracket
+			if err != nil {
+				return nil, err
+			}
+			name := p.curToken.Literal
+			value, err := p.parseSection(true)
+			if err != nil {
+				return nil, err
+			}
+
+			arr, exists := fileMap[name]
+
+			if exists {
+				fileMap[name] = append(arr.([]map[string]any), value)
+			} else {
+				fileMap[name] = []map[string]any{value}
 			}
 		}
 
@@ -68,10 +90,17 @@ func (p *Parser) ParseFile() (map[string]any, error) {
 	return fileMap, nil
 }
 
-func (p *Parser) parseSection() (map[string]any, error) {
+func (p *Parser) parseSection(arrSection bool) (map[string]any, error) {
 	err := p.NextToken() // advance past lbrace
 	if err != nil {
 		return nil, err
+	}
+
+	if arrSection {
+		err := p.NextToken() // advance past ]
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	err = p.NextToken() // advance to first

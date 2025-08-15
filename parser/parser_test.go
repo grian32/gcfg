@@ -20,6 +20,14 @@ Sec {
 	b = 4
 	hi = true
 }
+
+[SecArr] {
+	foo = 4
+}
+
+[SecArr] {
+	foo = 5
+}
 `
 	expectedOutput := map[string]any{
 		"x": 3,
@@ -31,6 +39,14 @@ Sec {
 		"Sec": map[string]any{
 			"b":  4,
 			"hi": true,
+		},
+		"SecArr": []map[string]any{
+			{
+				"foo": 4,
+			},
+			{
+				"foo": 5,
+			},
 		},
 	}
 
