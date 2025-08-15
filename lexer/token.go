@@ -20,7 +20,8 @@ const (
 	INT
 	FLOAT
 	STRING
-	BOOL
+	TRUE
+	FALSE
 	NULL
 
 	EOF

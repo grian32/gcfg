@@ -20,6 +20,12 @@ var singleCharTokens = map[byte]TokenType{
 	',': COMMA,
 }
 
+var keywordToken = map[string]TokenType{
+	"true":  TRUE,
+	"false": FALSE,
+	"nil":   NULL,
+}
+
 func New(input []byte) *Lexer {
 	l := &Lexer{input: input}
 	l.advance()
@@ -64,8 +70,7 @@ func (l *Lexer) NextToken() (Token, error) {
 	} else if IsDigit(l.ch) {
 		return l.readNumber()
 	} else {
-		//return l.readIdent()
-		return Token{}, nil
+		return l.readIdent()
 	}
 }
 
@@ -73,6 +78,23 @@ func (l *Lexer) skipWhitespace() {
 	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
 		l.advance()
 	}
+}
+
+func (l *Lexer) readIdent() (Token, error) {
+	startPos := l.pos
+
+	for IsLetter(l.ch) {
+		l.advance()
+	}
+
+	literal := string(l.input[startPos:l.pos])
+
+	keyword, exists := keywordToken[literal]
+	if exists {
+		return Token{Type: keyword, Literal: literal}, nil
+	}
+
+	return Token{Type: IDENT, Literal: literal}, nil
 }
 
 func (l *Lexer) readString() (Token, error) {

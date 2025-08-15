@@ -20,14 +20,15 @@ func _() {
 	_ = x[INT-9]
 	_ = x[FLOAT-10]
 	_ = x[STRING-11]
-	_ = x[BOOL-12]
-	_ = x[NULL-13]
-	_ = x[EOF-14]
+	_ = x[TRUE-12]
+	_ = x[FALSE-13]
+	_ = x[NULL-14]
+	_ = x[EOF-15]
 }
 
-const _TokenType_name = "LBRACKETRBRACKETLPARENRPARENLBRACERBRACEASSIGNCOMMAIDENTINTFLOATSTRINGBOOLNULLEOF"
+const _TokenType_name = "LBRACKETRBRACKETLPARENRPARENLBRACERBRACEASSIGNCOMMAIDENTINTFLOATSTRINGTRUEFALSENULLEOF"
 
-var _TokenType_index = [...]uint8{0, 8, 16, 22, 28, 34, 40, 46, 51, 56, 59, 64, 70, 74, 78, 81}
+var _TokenType_index = [...]uint8{0, 8, 16, 22, 28, 34, 40, 46, 51, 56, 59, 64, 70, 74, 79, 83, 86}
 
 func (i TokenType) String() string {
 	if i >= TokenType(len(_TokenType_index)-1) {

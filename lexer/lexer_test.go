@@ -13,6 +13,10 @@ func TestNextToken(t *testing.T) {
 1.23
 123
 "hello"
+true
+false
+foo
+nil
 	`
 
 	expectedTokenTypes := []Token{
@@ -27,8 +31,8 @@ func TestNextToken(t *testing.T) {
 		newToken(FLOAT, "1.23"),
 		newToken(INT, "123"),
 		newToken(STRING, "hello"),
-		newToken(BOOL, "true"),
-		newToken(BOOL, "false"),
+		newToken(TRUE, "true"),
+		newToken(FALSE, "false"),
 		newToken(IDENT, "foo"),
 		newToken(NULL, "nil"),
 		newToken(EOF, ""),
