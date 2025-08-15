@@ -46,30 +46,27 @@ func (l *Lexer) peek() byte {
 }
 
 func (l *Lexer) NextToken() (Token, error) {
-	var tok Token
-
 	// TODO: consider not doing this.. maybe just for indentation
 	l.skipWhitespace()
 
 	singleTok, exists := singleCharTokens[l.ch]
 	if exists {
-		tok = newSingleToken(singleTok, l.ch)
+		tok := newSingleToken(singleTok, l.ch)
 		l.advance()
 		return tok, nil
 	}
 
 	if l.ch == 0 {
-		tok.Literal = ""
-		tok.Type = EOF
+		l.advance()
+		return Token{Type: EOF, Literal: ""}, nil
 	} else if l.ch == '"' {
 		return l.readString()
 	} else if IsDigit(l.ch) {
 		return l.readNumber()
 	} else {
-		// identifiers, booleans, null
+		//return l.readIdent()
+		return Token{}, nil
 	}
-
-	return tok, nil
 }
 
 func (l *Lexer) skipWhitespace() {
@@ -87,7 +84,9 @@ func (l *Lexer) readString() (Token, error) {
 		l.advance()
 	}
 
-	return Token{Type: STRING, Literal: string(l.input[startPos:l.pos])}, nil
+	l.advance()
+
+	return Token{Type: STRING, Literal: string(l.input[startPos : l.pos-1])}, nil
 }
 
 func (l *Lexer) readNumber() (Token, error) {
@@ -111,6 +110,8 @@ func (l *Lexer) readNumber() (Token, error) {
 	if literal[len(literal)-1] == '.' {
 		return Token{}, errors.New("numbers not allowed to end in dot")
 	}
+
+	l.advance()
 
 	return Token{Type: tokType, Literal: literal}, nil
 }

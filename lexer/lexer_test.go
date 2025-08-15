@@ -27,6 +27,11 @@ func TestNextToken(t *testing.T) {
 		newToken(FLOAT, "1.23"),
 		newToken(INT, "123"),
 		newToken(STRING, "hello"),
+		//newToken(BOOL, "true"),
+		//newToken(BOOL, "false"),
+		//newToken(IDENT, "foo"),
+		//newToken(NULL, "nil"),
+		newToken(EOF, ""),
 	}
 
 	l := New([]byte(input))
