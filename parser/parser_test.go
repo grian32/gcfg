@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestSimpleAssign(t *testing.T) {
+func TestParseFile(t *testing.T) {
 	input := `
 x = 3
 y = 4.4
@@ -15,6 +15,11 @@ z = "hello"
 b = true
 c = false
 d = nil
+
+Sec {
+	b = 4
+	hi = true
+}
 `
 	expectedOutput := map[string]any{
 		"x": 3,
@@ -23,6 +28,10 @@ d = nil
 		"b": true,
 		"c": false,
 		"d": nil,
+		"Sec": map[string]any{
+			"b":  4,
+			"hi": true,
+		},
 	}
 
 	l := lexer.New([]byte(input))
