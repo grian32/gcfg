@@ -254,6 +254,9 @@ func (p *Parser) parseArray() (any, error) {
 		}
 
 		val, err := p.parseSimpleValue()
+		if p.curToken.Type != lexer.COMMA {
+			return nil, errors.New("expected comma after value in array")
+		}
 		if p.curToken.Type != firstType {
 			return nil, errors.New("arrays must be of single type")
 		}
