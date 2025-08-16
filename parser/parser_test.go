@@ -2,6 +2,7 @@ package parser
 
 import (
 	"fmt"
+	"gcfg"
 	"gcfg/lexer"
 	"reflect"
 	"testing"
@@ -15,6 +16,7 @@ z = "hello"
 b = true
 c = false
 d = nil
+h = (2, 2)
 
 Sec {
 	b = 4
@@ -36,6 +38,10 @@ Sec {
 		"b": true,
 		"c": false,
 		"d": nil,
+		"h": gcfg.Pair[any, any]{
+			First:  2,
+			Second: 2,
+		},
 		"Sec": map[string]any{
 			"b":  4,
 			"hi": true,

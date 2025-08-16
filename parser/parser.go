@@ -2,9 +2,12 @@ package parser
 
 import (
 	"errors"
+	"gcfg"
 	"gcfg/lexer"
 	"strconv"
 )
+
+var ErrNotSimple = errors.New("value is not simple")
 
 type Parser struct {
 	l *lexer.Lexer
@@ -148,7 +151,7 @@ func (p *Parser) parseAssign() (any, error) {
 	return p.parseValue()
 }
 
-func (p *Parser) parseValue() (any, error) {
+func (p *Parser) parseSimpleValue() (any, error) {
 	var val any
 
 	switch p.curToken.Type {
@@ -173,8 +176,43 @@ func (p *Parser) parseValue() (any, error) {
 	case lexer.NULL:
 		val = nil
 	default:
-		return nil, errors.New("non accepted value")
+		return nil, ErrNotSimple
 	}
 
 	return val, nil
+}
+
+func (p *Parser) parseValue() (any, error) {
+	simple, err := p.parseSimpleValue()
+	if err != nil && !errors.Is(err, ErrNotSimple) {
+		return nil, err
+	}
+
+	if errors.Is(err, ErrNotSimple) {
+		switch p.curToken.Type {
+		case lexer.LPAREN:
+			err = p.NextToken()
+			if err != nil {
+				return nil, err
+			}
+
+			first, err := p.parseSimpleValue()
+			if err != nil {
+				return nil, err
+			}
+			second, err := p.parseSimpleValue()
+			if err != nil {
+				return nil, err
+			}
+
+			return gcfg.Pair[any, any]{
+				First:  first,
+				Second: second,
+			}, nil
+		default:
+			return nil, errors.New("invalid value")
+		}
+	} else {
+		return simple, nil
+	}
 }
