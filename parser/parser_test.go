@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"fmt"
 	"gcfg"
 	"gcfg/lexer"
 	"reflect"
@@ -17,6 +16,7 @@ b = true
 c = false
 d = nil
 h = (2, 2)
+m = [1,2,3,4,5]
 
 Sec {
 	b = 4
@@ -42,6 +42,7 @@ Sec {
 			First:  2,
 			Second: 2,
 		},
+		"m": []any{1, 2, 3, 4, 5},
 		"Sec": map[string]any{
 			"b":  4,
 			"hi": true,
@@ -60,8 +61,6 @@ Sec {
 	p := New(l)
 
 	output, err := p.ParseFile()
-
-	fmt.Println(output)
 
 	if err != nil || !reflect.DeepEqual(expectedOutput, output) {
 		t.Errorf("ParseFile=%v, %v, wanted match for %v", output, err, expectedOutput)

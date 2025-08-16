@@ -225,6 +225,52 @@ func (p *Parser) parsePair() (any, error) {
 	}, nil
 }
 
+func (p *Parser) parseArray() (any, error) {
+	err := p.NextToken() // advance past lbracket
+	if err != nil {
+		return nil, err
+	}
+
+	first, err := p.parseSimpleValue()
+	if err != nil {
+		return nil, err
+	}
+	firstType := p.curToken.Type
+
+	err = p.NextToken()
+	if p.curToken.Type != lexer.COMMA {
+		return nil, errors.New("expected comma after value in array")
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	arr := []any{first}
+
+	for p.curToken.Type != lexer.RBRACKET {
+		err = p.NextToken()
+		if err != nil {
+			return nil, err
+		}
+
+		val, err := p.parseSimpleValue()
+		if p.curToken.Type != firstType {
+			return nil, errors.New("arrays must be of single type")
+		}
+		if err != nil {
+			return nil, err
+		}
+		arr = append(arr, val)
+
+		err = p.NextToken()
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return arr, nil
+}
+
 func (p *Parser) parseValue() (any, error) {
 	simple, err := p.parseSimpleValue()
 	if err != nil && !errors.Is(err, ErrNotSimple) {
@@ -234,39 +280,9 @@ func (p *Parser) parseValue() (any, error) {
 	if errors.Is(err, ErrNotSimple) {
 		switch p.curToken.Type {
 		case lexer.LPAREN:
-			err = p.NextToken() // advance past lparen
-			if err != nil {
-				return nil, err
-			}
-
-			first, err := p.parseSimpleValue()
-			if err != nil {
-				return nil, err
-			}
-
-			err = p.NextToken()
-			if p.curToken.Type != lexer.COMMA {
-				return nil, errors.New("expected comma after value in pair")
-			}
-			if err != nil {
-				return nil, err
-			}
-
-			err = p.NextToken() // advance past comma
-			if err != nil {
-				return nil, err
-			}
-
-			second, err := p.parseSimpleValue()
-			if err != nil {
-				return nil, err
-			}
-
-			return gcfg.Pair[any, any]{
-				First:  first,
-				Second: second,
-			}, nil
 			return p.parsePair()
+		case lexer.LBRACKET:
+			return p.parseArray()
 		default:
 			return nil, errors.New("invalid value")
 		}
