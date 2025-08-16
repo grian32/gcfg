@@ -248,15 +248,15 @@ func (p *Parser) parseArray() (any, error) {
 	arr := []any{first}
 
 	for p.curToken.Type != lexer.RBRACKET {
+		if p.curToken.Type != lexer.COMMA {
+			return nil, errors.New("expected comma after value in array")
+		}
 		err = p.NextToken()
 		if err != nil {
 			return nil, err
 		}
 
 		val, err := p.parseSimpleValue()
-		if p.curToken.Type != lexer.COMMA {
-			return nil, errors.New("expected comma after value in array")
-		}
 		if p.curToken.Type != firstType {
 			return nil, errors.New("arrays must be of single type")
 		}
