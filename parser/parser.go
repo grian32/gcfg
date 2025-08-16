@@ -251,7 +251,8 @@ func (p *Parser) parseArray() (any, error) {
 		if p.curToken.Type != lexer.COMMA {
 			return nil, errors.New("expected comma after value in array")
 		}
-		err = p.NextToken()
+
+		err = p.NextToken() // advance past comma
 		if err != nil {
 			return nil, err
 		}
@@ -263,9 +264,10 @@ func (p *Parser) parseArray() (any, error) {
 		if err != nil {
 			return nil, err
 		}
+
 		arr = append(arr, val)
 
-		err = p.NextToken()
+		err = p.NextToken() // adv to comma
 		if err != nil {
 			return nil, err
 		}
