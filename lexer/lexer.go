@@ -128,8 +128,6 @@ func (l *Lexer) readNumber() (Token, error) {
 		return Token{}, errors.New("numbers not allowed to end in dot")
 	}
 
-	l.advance()
-
 	return Token{Type: tokType, Literal: literal}, nil
 }
 

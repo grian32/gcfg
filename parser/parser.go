@@ -191,7 +191,7 @@ func (p *Parser) parseValue() (any, error) {
 	if errors.Is(err, ErrNotSimple) {
 		switch p.curToken.Type {
 		case lexer.LPAREN:
-			err = p.NextToken()
+			err = p.NextToken() // advance past lparen
 			if err != nil {
 				return nil, err
 			}
@@ -200,6 +200,20 @@ func (p *Parser) parseValue() (any, error) {
 			if err != nil {
 				return nil, err
 			}
+
+			err = p.NextToken()
+			if p.curToken.Type != lexer.COMMA {
+				return nil, errors.New("expected comma after value in pair")
+			}
+			if err != nil {
+				return nil, err
+			}
+
+			err = p.NextToken() // advance past comma
+			if err != nil {
+				return nil, err
+			}
+
 			second, err := p.parseSimpleValue()
 			if err != nil {
 				return nil, err
