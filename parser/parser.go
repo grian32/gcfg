@@ -182,6 +182,49 @@ func (p *Parser) parseSimpleValue() (any, error) {
 	return val, nil
 }
 
+func (p *Parser) parsePair() (any, error) {
+	err := p.NextToken() // advance past lparen
+	if err != nil {
+		return nil, err
+	}
+
+	first, err := p.parseSimpleValue()
+	if err != nil {
+		return nil, err
+	}
+
+	err = p.NextToken()
+	if p.curToken.Type != lexer.COMMA {
+		return nil, errors.New("expected comma after value in pair")
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	err = p.NextToken() // advance past comma
+	if err != nil {
+		return nil, err
+	}
+
+	second, err := p.parseSimpleValue()
+	if err != nil {
+		return nil, err
+	}
+
+	err = p.NextToken()
+	if err != nil {
+		return nil, err
+	}
+	if p.curToken.Type != lexer.RPAREN {
+		return nil, errors.New("expected rparen after second value in pair")
+	}
+
+	return gcfg.Pair[any, any]{
+		First:  first,
+		Second: second,
+	}, nil
+}
+
 func (p *Parser) parseValue() (any, error) {
 	simple, err := p.parseSimpleValue()
 	if err != nil && !errors.Is(err, ErrNotSimple) {
@@ -223,6 +266,7 @@ func (p *Parser) parseValue() (any, error) {
 				First:  first,
 				Second: second,
 			}, nil
+			return p.parsePair()
 		default:
 			return nil, errors.New("invalid value")
 		}
