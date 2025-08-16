@@ -2,8 +2,8 @@ package parser
 
 import (
 	"errors"
-	"gcfg"
 	"gcfg/lexer"
+	"gcfg/pair"
 	"strconv"
 )
 
@@ -219,7 +219,7 @@ func (p *Parser) parsePair() (any, error) {
 		return nil, errors.New("expected rparen after second value in pair")
 	}
 
-	return gcfg.Pair[any, any]{
+	return pair.Pair[any, any]{
 		First:  first,
 		Second: second,
 	}, nil

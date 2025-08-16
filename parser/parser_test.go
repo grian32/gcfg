@@ -1,8 +1,8 @@
 package parser
 
 import (
-	"gcfg"
 	"gcfg/lexer"
+	"gcfg/pair"
 	"reflect"
 	"testing"
 )
@@ -38,7 +38,7 @@ Sec {
 		"b": true,
 		"c": false,
 		"d": nil,
-		"h": gcfg.Pair[any, any]{
+		"h": pair.Pair[any, any]{
 			First:  2,
 			Second: 2,
 		},

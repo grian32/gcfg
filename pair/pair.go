@@ -1,4 +1,4 @@
-package gcfg
+package pair
 
 import "fmt"
 
