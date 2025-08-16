@@ -79,52 +79,22 @@ func fillStruct(elem reflect.Value, parsed map[string]any, recLevel uint32) erro
 			switch arrType {
 			case reflect.Struct:
 				// TODO
-			case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-				v, ok := parsed[tag].([]any)
-				if !ok {
-					return fmt.Errorf("field %s: wanted []any, got %T", field.Name, parsed[tag])
-				}
-				arrValue := reflect.MakeSlice(value.Type(), len(v), len(v))
-				for idx := range len(v) {
-					val, ok := v[idx].(int)
-					if !ok {
-						return fmt.Errorf("field %s: wanted int as part of [], got %T", field.Name, v[idx])
-					}
-					arrValue.Index(idx).SetInt(int64(val))
-				}
-				value.Set(arrValue)
-			case reflect.String:
-				v, ok := parsed[tag].([]any)
-				if !ok {
-					return fmt.Errorf("field %s: wanted []any, got %T", field.Name, parsed[tag])
-				}
-				arrValue := reflect.MakeSlice(value.Type(), len(v), len(v))
-
-				for idx := range len(v) {
-					val, ok := v[idx].(string)
-					if !ok {
-						return fmt.Errorf("field %s: wanted string as part of [], got %T", field.Name, v[idx])
-					}
-					arrValue.Index(idx).SetString(val)
-				}
-				value.Set(arrValue)
-			case reflect.Bool:
-				v, ok := parsed[tag].([]any)
-				if !ok {
-					return fmt.Errorf("field %s: wanted []any, got %T", field.Name, parsed[tag])
-				}
-				arrValue := reflect.MakeSlice(value.Type(), len(v), len(v))
-
-				for idx := range len(v) {
-					val, ok := v[idx].(bool)
-					if !ok {
-						return fmt.Errorf("field %s: wanted bool as part of [], got %T", field.Name, v[idx])
-					}
-					arrValue.Index(idx).SetBool(val)
-				}
-				value.Set(arrValue)
 			default:
-				return errors.New("not accepted value")
+				v, ok := parsed[tag].([]any)
+				if !ok {
+					return fmt.Errorf("field %s: wanted []any, got %T", field.Name, parsed[tag])
+				}
+				elemType := value.Type().Elem()
+				arrValue := reflect.MakeSlice(value.Type(), len(v), len(v))
+
+				for idx, item := range v {
+					itemVal := reflect.ValueOf(item)
+					if !itemVal.Type().ConvertibleTo(elemType) {
+						return fmt.Errorf("field %s: wanted %v as part of [], got %T", field.Name, elemType, v[idx])
+					}
+					arrValue.Index(idx).Set(itemVal.Convert(elemType))
+				}
+				value.Set(arrValue)
 			}
 		case reflect.Struct:
 			if recLevel >= 1 {
