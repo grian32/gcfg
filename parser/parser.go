@@ -97,6 +97,9 @@ func (p *Parser) parseSection(arrSection bool) (map[string]any, error) {
 	}
 
 	if arrSection {
+		if p.curToken.Type != lexer.RBRACKET {
+			return nil, errors.New("expected closing ] for array section")
+		}
 		err := p.NextToken() // advance past ]
 		if err != nil {
 			return nil, err
