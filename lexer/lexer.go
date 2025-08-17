@@ -59,7 +59,7 @@ func (l *Lexer) NextToken() (Token, error) {
 		return Token{Type: EOF, Literal: ""}, nil
 	} else if l.ch == '"' {
 		return l.readString()
-	} else if IsDigit(l.ch) {
+	} else if IsDigit(l.ch) || l.ch == '-' {
 		return l.readNumber()
 	} else {
 		return l.readIdent()
@@ -110,6 +110,10 @@ func (l *Lexer) readNumber() (Token, error) {
 	startPos := l.pos
 	tokType := INT
 	float := false
+
+	if l.ch == '-' {
+		l.advance()
+	}
 
 	for IsDigit(l.ch) || l.ch == '.' {
 		if l.ch == '.' {

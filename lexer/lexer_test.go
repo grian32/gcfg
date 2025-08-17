@@ -18,6 +18,8 @@ false
 foo
 nil
 2,2
+-23
+-2.2
 	`
 
 	expectedTokenTypes := []Token{
@@ -41,6 +43,8 @@ nil
 		newToken(INT, "2"),
 		newToken(COMMA, ","),
 		newToken(INT, "2"),
+		newToken(INT, "-23"),
+		newToken(FLOAT, "-2.2"),
 		newToken(EOF, ""),
 	}
 
