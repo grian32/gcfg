@@ -155,20 +155,14 @@ func (p *Parser) parseSimpleValue() (any, error) {
 	var val any
 
 	switch p.curToken.Type {
-	case lexer.INT:
-		value, err := strconv.Atoi(p.curToken.Literal)
-		if err != nil {
-			return nil, err
-		}
-		val = value
+	case lexer.INT, lexer.STRING:
+		val = p.curToken.Literal
 	case lexer.FLOAT:
 		value, err := strconv.ParseFloat(p.curToken.Literal, 64)
 		if err != nil {
 			return nil, err
 		}
 		val = value
-	case lexer.STRING:
-		val = p.curToken.Literal
 	case lexer.TRUE:
 		val = true
 	case lexer.FALSE:

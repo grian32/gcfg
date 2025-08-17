@@ -6,6 +6,7 @@ import (
 	"gcfg/lexer"
 	"gcfg/parser"
 	"reflect"
+	"strconv"
 )
 
 func Marshal() {
@@ -51,17 +52,29 @@ func fillStruct(elem reflect.Value, parsed map[string]any, recLevel uint32) erro
 
 		switch value.Kind() {
 		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-			v, ok := parsed[tag].(int)
+			v, ok := parsed[tag].(string)
 			if !ok {
-				return fmt.Errorf("field %s: expected int, got %T", field.Name, parsed[tag])
+				return fmt.Errorf("field %s: expected string, got %T", field.Name, parsed[tag])
 			}
-			value.SetInt(int64(v))
-		//case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
-		//	v, ok := parsed[tag].(uint)
-		//	if !ok {
-		//		return fmt.Errorf("field %s: expected uint, got %T", field.Name, parsed[tag])
-		//	}
-		//	value.SetUint(uint64(v))
+			bits := value.Type().Bits()
+			intVal, err := strconv.ParseInt(v, 10, bits)
+
+			if err != nil {
+				return err
+			}
+			value.SetInt(intVal)
+		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+			v, ok := parsed[tag].(string)
+			if !ok {
+				return fmt.Errorf("field %s: expected string, got %T", field.Name, parsed[tag])
+			}
+			bits := value.Type().Bits()
+
+			uintVal, err := strconv.ParseUint(v, 10, bits)
+			if err != nil {
+				return err
+			}
+			value.SetUint(uintVal)
 		case reflect.String:
 			v, ok := parsed[tag].(string)
 			if !ok {
@@ -103,6 +116,7 @@ func fillStruct(elem reflect.Value, parsed map[string]any, recLevel uint32) erro
 
 				value.Set(arrValue)
 			default:
+				// TODO: ints
 				v, ok := parsed[tag].([]any)
 				if !ok {
 					return fmt.Errorf("field %s: wanted []any, got %T", field.Name, parsed[tag])
@@ -141,4 +155,16 @@ func fillStruct(elem reflect.Value, parsed map[string]any, recLevel uint32) erro
 	}
 
 	return nil
+}
+
+func getMaxUnsigned(numBits int) uint64 {
+	return (1 << numBits) - 1
+}
+
+func getMaxSigned(numBits int) int64 {
+	return (1 << (numBits - 1)) - 1
+}
+
+func getMinSigned(numBits int) int64 {
+	return -1 << (numBits - 1)
 }

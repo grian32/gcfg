@@ -14,7 +14,7 @@ type Config struct {
 type Point struct {
 	X    int32    `gcfg:"x"`
 	Y    int32    `gcfg:"y"`
-	Z    int8     `gcfg:"z"`
+	Z    uint8    `gcfg:"z"`
 	S    []int32  `gcfg:"s"`
 	H    []string `gcfg:"h"`
 	Name string   `gcfg:"name"`
