@@ -76,14 +76,38 @@ func fillStruct(elem reflect.Value, parsed map[string]any, recLevel uint32) erro
 			value.SetBool(v)
 		case reflect.Slice:
 			arrType := value.Type().Elem().Kind()
+
 			switch arrType {
 			case reflect.Struct:
-				// TODO
+				v, ok := parsed[tag].([]map[string]any)
+				if !ok {
+					return fmt.Errorf("field %s: wanted map[string]any, got %T", field.Name, parsed[tag])
+				}
+
+				elemType := value.Type().Elem()
+				arrValue := reflect.MakeSlice(value.Type(), len(v), len(v))
+
+				if recLevel >= 1 {
+					return errors.New("nesting past 1 level not allowed")
+				}
+
+				for idx := range len(v) {
+					structValues := v[idx]
+					newElem := reflect.New(elemType).Elem()
+					err := fillStruct(newElem, structValues, recLevel+1)
+					if err != nil {
+						return err
+					}
+					arrValue.Index(idx).Set(newElem)
+				}
+
+				value.Set(arrValue)
 			default:
 				v, ok := parsed[tag].([]any)
 				if !ok {
 					return fmt.Errorf("field %s: wanted []any, got %T", field.Name, parsed[tag])
 				}
+
 				elemType := value.Type().Elem()
 				arrValue := reflect.MakeSlice(value.Type(), len(v), len(v))
 
@@ -96,6 +120,7 @@ func fillStruct(elem reflect.Value, parsed map[string]any, recLevel uint32) erro
 				}
 				value.Set(arrValue)
 			}
+
 		case reflect.Struct:
 			if recLevel >= 1 {
 				return errors.New("nesting past 1 level not allowed")

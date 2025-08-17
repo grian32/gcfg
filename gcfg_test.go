@@ -6,8 +6,9 @@ import (
 )
 
 type Config struct {
-	Pnt Point `gcfg:"Point"`
-	Set bool  `gcfg:"set"`
+	Pnt    Point    `gcfg:"Point"`
+	Set    bool     `gcfg:"set"`
+	SecArr []SecArr `gcfg:"SecArr"`
 }
 
 type Point struct {
@@ -17,6 +18,10 @@ type Point struct {
 	S    []int32  `gcfg:"s"`
 	H    []string `gcfg:"h"`
 	Name string   `gcfg:"name"`
+}
+
+type SecArr struct {
+	Foo int32 `gcfg:"foo"`
 }
 
 func TestUnmarshal(t *testing.T) {
@@ -31,8 +36,16 @@ Point {
 }
 
 set = true
+
+[SecArr] {
+	foo = 3
+}
+
+[SecArr] {
+	foo = 4
+}
 `
-	expectedCfg := Config{
+	var expectedCfg = Config{
 		Pnt: Point{
 			X:    3,
 			Y:    1,
@@ -42,8 +55,15 @@ set = true
 			Name: "hello",
 		},
 		Set: true,
+		SecArr: []SecArr{
+			{
+				Foo: 3,
+			},
+			{
+				Foo: 4,
+			},
+		},
 	}
-
 	var cfg Config
 	err := Unmarshal([]byte(input), &cfg)
 	if err != nil || !reflect.DeepEqual(cfg, expectedCfg) {
