@@ -128,6 +128,10 @@ func (l *Lexer) readNumber() (Token, error) {
 
 	literal := string(l.input[startPos:l.pos])
 
+	if literal == "-" {
+		return Token{}, errors.New("malformed number, only negative entered")
+	}
+
 	if literal[len(literal)-1] == '.' {
 		return Token{}, errors.New("numbers not allowed to end in dot")
 	}
