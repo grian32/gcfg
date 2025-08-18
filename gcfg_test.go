@@ -16,6 +16,7 @@ type Point struct {
 	Y    int32    `gcfg:"y"`
 	Z    uint8    `gcfg:"z"`
 	S    []int32  `gcfg:"s"`
+	L    []uint32 `gcfg:"l"`
 	H    []string `gcfg:"h"`
 	Name string   `gcfg:"name"`
 }
@@ -31,6 +32,7 @@ Point {
 	y = 1
 	z = 4
 	s = [1,2,3,4]
+	l = [1,2,3,4]
 	h = ["h", "i"]
 	name = "hello"
 }
@@ -51,6 +53,7 @@ set = true
 			Y:    1,
 			Z:    4,
 			S:    []int32{1, 2, 3, 4},
+			L:    []uint32{1, 2, 3, 4},
 			H:    []string{"h", "i"},
 			Name: "hello",
 		},

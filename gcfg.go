@@ -51,6 +51,8 @@ func fillStruct(elem reflect.Value, parsed map[string]any, recLevel uint32) erro
 		}
 
 		switch value.Kind() {
+		// so much bs duplicate code when it comes to ints here and in slices, can't rly generalize it by passing the
+		// functions or something because it has diff signatures for int and uint64
 		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 			v, ok := parsed[tag].(string)
 			if !ok {
@@ -115,8 +117,49 @@ func fillStruct(elem reflect.Value, parsed map[string]any, recLevel uint32) erro
 				}
 
 				value.Set(arrValue)
+			case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+				v, ok := parsed[tag].([]any)
+				if !ok {
+					return fmt.Errorf("field %s: wanted []any, got %T", field.Name, parsed[tag])
+				}
+				bits := value.Type().Elem().Bits()
+				arrValue := reflect.MakeSlice(value.Type(), len(v), len(v))
+
+				for idx := range len(v) {
+					str, ok := v[idx].(string)
+					if !ok {
+						return fmt.Errorf("field %s: wanted str as part of []any, got %T", field.Name, v[idx])
+					}
+					intVal, err := strconv.ParseInt(str, 10, bits)
+					if err != nil {
+						return err
+					}
+
+					arrValue.Index(idx).SetInt(intVal)
+				}
+				value.Set(arrValue)
+			case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+				v, ok := parsed[tag].([]any)
+				if !ok {
+					return fmt.Errorf("field %s: wanted []any, got %T", field.Name, parsed[tag])
+				}
+				bits := value.Type().Elem().Bits()
+				arrValue := reflect.MakeSlice(value.Type(), len(v), len(v))
+
+				for idx := range len(v) {
+					str, ok := v[idx].(string)
+					if !ok {
+						return fmt.Errorf("field %s: wanted str as part of []any, got %T", field.Name, v[idx])
+					}
+					intVal, err := strconv.ParseUint(str, 10, bits)
+					if err != nil {
+						return err
+					}
+
+					arrValue.Index(idx).SetUint(intVal)
+				}
+				value.Set(arrValue)
 			default:
-				// TODO: ints
 				v, ok := parsed[tag].([]any)
 				if !ok {
 					return fmt.Errorf("field %s: wanted []any, got %T", field.Name, parsed[tag])
