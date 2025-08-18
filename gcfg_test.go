@@ -1,6 +1,7 @@
 package gcfg
 
 import (
+	"gcfg/pair"
 	"reflect"
 	"testing"
 )
@@ -12,13 +13,14 @@ type Config struct {
 }
 
 type Point struct {
-	X    int32    `gcfg:"x"`
-	Y    int32    `gcfg:"y"`
-	Z    uint8    `gcfg:"z"`
-	S    []int32  `gcfg:"s"`
-	L    []uint32 `gcfg:"l"`
-	H    []string `gcfg:"h"`
-	Name string   `gcfg:"name"`
+	X    int32                    `gcfg:"x"`
+	Y    int32                    `gcfg:"y"`
+	Z    uint8                    `gcfg:"z"`
+	S    []int32                  `gcfg:"s"`
+	L    []uint32                 `gcfg:"l"`
+	Ab   pair.Pair[int32, string] `gcfg:"ab"`
+	H    []string                 `gcfg:"h"`
+	Name string                   `gcfg:"name"`
 }
 
 type SecArr struct {
@@ -33,6 +35,7 @@ Point {
 	z = 4
 	s = [1,2,3,4]
 	l = [1,2,3,4]
+	ab = (1, "hi")
 	h = ["h", "i"]
 	name = "hello"
 }
@@ -54,6 +57,7 @@ set = true
 			Z:    4,
 			S:    []int32{1, 2, 3, 4},
 			L:    []uint32{1, 2, 3, 4},
+			Ab:   pair.Pair[int32, string]{First: 1, Second: "hi"},
 			H:    []string{"h", "i"},
 			Name: "hello",
 		},
@@ -67,8 +71,10 @@ set = true
 			},
 		},
 	}
+
 	var cfg Config
 	err := Unmarshal([]byte(input), &cfg)
+
 	if err != nil || !reflect.DeepEqual(cfg, expectedCfg) {
 		t.Errorf("Unmarshal=%v, %v want match for %v", cfg, err, expectedCfg)
 	}

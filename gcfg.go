@@ -4,10 +4,14 @@ import (
 	"errors"
 	"fmt"
 	"gcfg/lexer"
+	"gcfg/pair"
 	"gcfg/parser"
 	"reflect"
 	"strconv"
+	"strings"
 )
+
+var zeroPair = reflect.TypeOf(pair.Pair[any, any]{})
 
 func Marshal() {
 
@@ -179,18 +183,37 @@ func fillStruct(elem reflect.Value, parsed map[string]any, recLevel uint32) erro
 			}
 
 		case reflect.Struct:
-			if recLevel >= 1 {
-				return errors.New("nesting past 1 level not allowed")
-			}
+			currType := field.Type
 
-			structValues, ok := parsed[tag].(map[string]any)
-			if !ok {
-				return errors.New("bad input for nested struct")
-			}
+			if currType.PkgPath() == "gcfg/pair" && strings.HasPrefix(currType.Name(), "Pair[") {
+				p, ok := parsed[tag].(pair.Pair[any, any])
+				if !ok {
+					return fmt.Errorf("field %s: expected pair.Pair[any, any], got %T", field.Name, p)
+				}
 
-			err := fillStruct(value, structValues, recLevel+1)
-			if err != nil {
-				return err
+				structValues := map[string]any{
+					"First":  p.First,
+					"Second": p.Second,
+				}
+
+				err := fillStruct(value, structValues, recLevel+1)
+				if err != nil {
+					return err
+				}
+			} else {
+				if recLevel >= 1 {
+					return errors.New("nesting past 1 level not allowed")
+				}
+
+				structValues, ok := parsed[tag].(map[string]any)
+				if !ok {
+					return errors.New("bad input for nested struct")
+				}
+
+				err := fillStruct(value, structValues, recLevel+1)
+				if err != nil {
+					return err
+				}
 			}
 		default:
 			return errors.New("not accepted value")

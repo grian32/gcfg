@@ -3,8 +3,8 @@ package pair
 import "fmt"
 
 type Pair[T, U any] struct {
-	First  T
-	Second U
+	First  T `gcfg:"First"`
+	Second U `gcfg:"Second"`
 }
 
 func (p Pair[T, U]) String() string {
