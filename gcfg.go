@@ -156,15 +156,3 @@ func fillStruct(elem reflect.Value, parsed map[string]any, recLevel uint32) erro
 
 	return nil
 }
-
-func getMaxUnsigned(numBits int) uint64 {
-	return (1 << numBits) - 1
-}
-
-func getMaxSigned(numBits int) int64 {
-	return (1 << (numBits - 1)) - 1
-}
-
-func getMinSigned(numBits int) int64 {
-	return -1 << (numBits - 1)
-}
