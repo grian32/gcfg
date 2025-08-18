@@ -52,15 +52,29 @@ func fillStruct(elem reflect.Value, parsed map[string]any, recLevel uint32) erro
 
 		switch value.Kind() {
 		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-			err := fillInt(value, parsed, tag, field.Name)
+			v, ok := parsed[tag].(string)
+			if !ok {
+				return fmt.Errorf("field %s: expected string, got %T", field.Name, parsed[tag])
+			}
+			bits := value.Type().Bits()
+			intVal, err := strconv.ParseInt(v, 10, bits)
+
 			if err != nil {
 				return err
 			}
+			value.SetInt(intVal)
 		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
-			err := fillUint(value, parsed, tag, field.Name)
+			v, ok := parsed[tag].(string)
+			if !ok {
+				return fmt.Errorf("field %s: expected string, got %T", field.Name, parsed[tag])
+			}
+			bits := value.Type().Bits()
+
+			uintVal, err := strconv.ParseUint(v, 10, bits)
 			if err != nil {
 				return err
 			}
+			value.SetUint(uintVal)
 		case reflect.String:
 			v, ok := parsed[tag].(string)
 			if !ok {
@@ -139,38 +153,6 @@ func fillStruct(elem reflect.Value, parsed map[string]any, recLevel uint32) erro
 			return errors.New("not accepted value")
 		}
 	}
-
-	return nil
-}
-
-func fillInt(value reflect.Value, parsed map[string]any, tag, fieldName string) error {
-	v, ok := parsed[tag].(string)
-	if !ok {
-		return fmt.Errorf("field %s: expected string, got %T", fieldName, parsed[tag])
-	}
-	bits := value.Type().Bits()
-	intVal, err := strconv.ParseInt(v, 10, bits)
-
-	if err != nil {
-		return err
-	}
-	value.SetInt(intVal)
-
-	return nil
-}
-
-func fillUint(value reflect.Value, parsed map[string]any, tag, fieldName string) error {
-	v, ok := parsed[tag].(string)
-	if !ok {
-		return fmt.Errorf("field %s: expected string, got %T", fieldName, parsed[tag])
-	}
-	bits := value.Type().Bits()
-	intVal, err := strconv.ParseUint(v, 10, bits)
-
-	if err != nil {
-		return err
-	}
-	value.SetUint(intVal)
 
 	return nil
 }
