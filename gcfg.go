@@ -3,12 +3,13 @@ package gcfg
 import (
 	"errors"
 	"fmt"
-	"gcfg/lexer"
-	"gcfg/pair"
-	"gcfg/parser"
 	"reflect"
 	"strconv"
 	"strings"
+
+	"github.com/grian32/gcfg/lexer"
+	"github.com/grian32/gcfg/pair"
+	"github.com/grian32/gcfg/parser"
 )
 
 func Unmarshal(input []byte, v any) error {
@@ -179,7 +180,7 @@ func fillStruct(elem reflect.Value, parsed map[string]any, recLevel uint32) erro
 		case reflect.Struct:
 			currType := field.Type
 
-			if currType.PkgPath() == "gcfg/pair" && strings.HasPrefix(currType.Name(), "Pair[") {
+			if currType.PkgPath() == "github.com/grian32/gcfg/pair" && strings.HasPrefix(currType.Name(), "Pair[") {
 				p, ok := parsed[tag].(pair.Pair[any, any])
 				if !ok {
 					return fmt.Errorf("field %s: expected pair.Pair[any, any], got %T", field.Name, p)

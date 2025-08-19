@@ -1,10 +1,11 @@
 package parser
 
 import (
-	"gcfg/lexer"
-	"gcfg/pair"
 	"reflect"
 	"testing"
+
+	"github.com/grian32/gcfg/lexer"
+	"github.com/grian32/gcfg/pair"
 )
 
 func TestParseFile(t *testing.T) {

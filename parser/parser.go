@@ -2,9 +2,10 @@ package parser
 
 import (
 	"errors"
-	"gcfg/lexer"
-	"gcfg/pair"
 	"strconv"
+
+	"github.com/grian32/gcfg/lexer"
+	"github.com/grian32/gcfg/pair"
 )
 
 var ErrNotSimple = errors.New("value is not simple")

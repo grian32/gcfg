@@ -1,9 +1,10 @@
 package gcfg
 
 import (
-	"gcfg/pair"
 	"reflect"
 	"testing"
+
+	"github.com/grian32/gcfg/pair"
 )
 
 type Config struct {
