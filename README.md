@@ -10,9 +10,9 @@ GCFG supports the following value types: integers, floats, strings, booleans, ar
 
 ### Pairs
 
-Pairs are a tuple of two values of the same type. 
+Pairs are a tuple of two values of any type.
 ```gcfg
-pair = (3, 3)
+pair = (3, "string")
 ```
 
 The GCFG Library also provides a Pair type.
