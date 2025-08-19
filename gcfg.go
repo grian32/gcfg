@@ -11,12 +11,6 @@ import (
 	"strings"
 )
 
-var zeroPair = reflect.TypeOf(pair.Pair[any, any]{})
-
-func Marshal() {
-
-}
-
 func Unmarshal(input []byte, v any) error {
 	l := lexer.New(input)
 	p := parser.New(l)
