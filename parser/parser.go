@@ -226,6 +226,10 @@ func (p *Parser) parseArray() (any, error) {
 		return nil, err
 	}
 
+	if p.curToken.Type == lexer.RBRACKET {
+		return []any{}, nil
+	}
+
 	first, err := p.parseSimpleValue()
 	if err != nil {
 		return nil, err

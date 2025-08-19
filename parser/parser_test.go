@@ -16,6 +16,7 @@ z = "hello"
 b = true
 c = false
 d = nil
+bb = []
 h = (2, 2)
 m = [1,2,3,4,5]
 
@@ -34,12 +35,13 @@ Sec {
 `
 	// ints are outputted as strings by the parser and converted at reflection for easier bounds checking
 	expectedOutput := map[string]any{
-		"x": "3",
-		"y": 4.4,
-		"z": "hello",
-		"b": true,
-		"c": false,
-		"d": nil,
+		"x":  "3",
+		"y":  4.4,
+		"z":  "hello",
+		"b":  true,
+		"c":  false,
+		"d":  nil,
+		"bb": []any{},
 		"h": pair.Pair[any, any]{
 			First:  "2",
 			Second: "2",
