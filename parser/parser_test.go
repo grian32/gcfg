@@ -32,28 +32,29 @@ Sec {
 	foo = 5
 }
 `
+	// ints are outputted as strings by the parser and converted at reflection for easier bounds checking
 	expectedOutput := map[string]any{
-		"x": 3,
+		"x": "3",
 		"y": 4.4,
 		"z": "hello",
 		"b": true,
 		"c": false,
 		"d": nil,
 		"h": pair.Pair[any, any]{
-			First:  2,
-			Second: 2,
+			First:  "2",
+			Second: "2",
 		},
-		"m": []any{1, 2, 3, 4, 5},
+		"m": []any{"1", "2", "3", "4", "5"},
 		"Sec": map[string]any{
-			"b":  4,
+			"b":  "4",
 			"hi": true,
 		},
 		"SecArr": []map[string]any{
 			{
-				"foo": 4,
+				"foo": "4",
 			},
 			{
-				"foo": 5,
+				"foo": "5",
 			},
 		},
 	}
