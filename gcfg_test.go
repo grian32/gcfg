@@ -20,6 +20,7 @@ type Point struct {
 	S          []int32                  `gcfg:"s"`
 	L          []uint32                 `gcfg:"l"`
 	Empty      []string                 `gcfg:"empty"`
+	Single     []string                 `gcfg:"single"`
 	Ab         pair.Pair[int32, string] `gcfg:"ab"`
 	H          []string                 `gcfg:"h"`
 	Name       string                   `gcfg:"name"`
@@ -39,6 +40,7 @@ Point {
 	s = [1,2,3,4]
 	l = [1,2,3,4]
 	empty = []
+	single = ["hi"]
 	ab = (1, "hi")
 	h = ["h", "i"]
 	name = "hello"
@@ -63,6 +65,7 @@ set = true
 			S:          []int32{1, 2, 3, 4},
 			L:          []uint32{1, 2, 3, 4},
 			Empty:      []string{},
+			Single:     []string{"hi"},
 			Ab:         pair.Pair[int32, string]{First: 1, Second: "hi"},
 			H:          []string{"h", "i"},
 			Name:       "hello",

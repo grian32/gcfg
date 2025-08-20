@@ -237,7 +237,9 @@ func (p *Parser) parseArray() (any, error) {
 	firstType := p.curToken.Type
 
 	err = p.NextToken()
-	if p.curToken.Type != lexer.COMMA {
+	if p.curToken.Type == lexer.RBRACKET {
+		return []any{first}, nil
+	} else if p.curToken.Type != lexer.COMMA {
 		return nil, errors.New("expected comma after value in array")
 	}
 	if err != nil {
