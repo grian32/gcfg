@@ -25,6 +25,7 @@ type Point struct {
 	H          []string                 `gcfg:"h"`
 	Name       string                   `gcfg:"name"`
 	Underscore string                   `gcfg:"und_erscore"`
+	Multiline  string                   `gcfg:"multiline"`
 }
 
 type SecArr struct {
@@ -45,6 +46,10 @@ Point {
 	h = ["h", "i"]
 	name = "hello"
 	und_erscore = "hi"
+	multiline = "
+	hi
+hello
+"
 }
 
 set = true
@@ -70,6 +75,7 @@ set = true
 			H:          []string{"h", "i"},
 			Name:       "hello",
 			Underscore: "hi",
+			Multiline:  "\n\thi\nhello\n",
 		},
 		Set: true,
 		SecArr: []SecArr{
